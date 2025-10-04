@@ -2,11 +2,11 @@
 
 # fastfetch起動条件の設定（連想配列）
 typeset -A FASTFETCH_CONDITIONS=(
-    [min_width]=$FASTFETCH_WIDTH + 50                    # 最小横幅
-    [require_interactive]=true        # インタラクティブシェル必須
-    [require_command]=true            # fastfetchコマンド存在確認
-    [check_ps1]=true                  # PS1環境変数の確認
-    [exclude_neovim]=true             # neovim上での起動を除外
+  [min_width]=$((FASTFETCH_WIDTH + 50))                    # 最小横幅
+  [require_interactive]=true        # インタラクティブシェル必須
+  [require_command]=true            # fastfetchコマンド存在確認
+  [check_ps1]=true                  # PS1環境変数の確認
+  [exclude_neovim]=true             # neovim上での起動を除外
 )
 
 # スクリプトが実行されたかどうかのフラグ
@@ -77,7 +77,7 @@ handle_resize() {
 # メイン処理
 call() {
   if check_conditions && [[ $SCRIPT_EXECUTED -eq 0 ]]; then
-    fastfetch --$FASTFETCH_TYPE $FASTFETCH_SOURCE
+    fastfetch ${FASTFETCH_TYPE:+--$FASTFETCH_TYPE} "$FASTFETCH_SOURCE"
     FASTFETCH_EXECUTED=1
     SCRIPT_EXECUTED=1
   fi
