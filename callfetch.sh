@@ -77,7 +77,7 @@ handle_resize() {
 # メイン処理
 call() {
   if check_conditions && [[ $SCRIPT_EXECUTED -eq 0 ]]; then
-    fastfetch ${FASTFETCH_TYPE:+--$FASTFETCH_TYPE} "$FASTFETCH_SOURCE" --logo-width "$FASTFETCH_WIDTH"
+    fastfetch ${FASTFETCH_TYPE:+--$FASTFETCH_TYPE} "$FASTFETCH_SOURCE" --logo-width "$FASTFETCH_WIDTH" --logo-padding-left "$FASTFETCH_PADDING_LEFT" --logo-padding-right "$FASTFETCH_PADDING_RIGHT" --logo-padding-top "$FASTFETCH_PADDING_TOP"
     FASTFETCH_EXECUTED=1
     SCRIPT_EXECUTED=1
   fi
