@@ -2,7 +2,7 @@
 
 # fastfetch起動条件の設定（連想配列）
 typeset -A FASTFETCH_CONDITIONS=(
-    [min_width]=85                    # 最小横幅
+    [min_width]=$FASTFETCH_WIDTH + 50                    # 最小横幅
     [require_interactive]=true        # インタラクティブシェル必須
     [require_command]=true            # fastfetchコマンド存在確認
     [check_ps1]=true                  # PS1環境変数の確認
@@ -77,7 +77,7 @@ handle_resize() {
 # メイン処理
 call() {
   if check_conditions && [[ $SCRIPT_EXECUTED -eq 0 ]]; then
-    fastfetch
+    fastfetch --logo-type $FASTFETCH_TYPE -l $FASTFETCH_SOURCE --logo-width $FASTFETCH_WIDTH
     FASTFETCH_EXECUTED=1
     SCRIPT_EXECUTED=1
   fi
