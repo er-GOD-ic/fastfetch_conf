@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 # fastfetch起動条件の設定（連想配列）
 typeset -A FASTFETCH_CONDITIONS=(
