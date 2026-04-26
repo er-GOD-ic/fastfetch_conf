@@ -3,9 +3,9 @@
 # fastfetch起動条件の設定（連想配列）
 typeset -A FASTFETCH_CONDITIONS=(
   [min_width]=$((FASTFETCH_WIDTH + 50))                    # 最小横幅
-  [require_interactive]=true        # インタラクティブシェル必須
+  [require_interactive]=false        # インタラクティブシェル必須
   [require_command]=true            # fastfetchコマンド存在確認
-  [check_ps1]=true                  # PS1環境変数の確認
+  [check_ps1]=false                  # PS1環境変数の確認
   [exclude_neovim]=true             # neovim上での起動を除外
 )
 
@@ -16,20 +16,23 @@ FASTFETCH_EXECUTED=0
 
 # 条件チェック関数
 check_conditions() {
-  local term_width=$(tput cols)
+  local term_width=${COLUMNS:-0}
 
   # 横幅チェック
   if [[ ${FASTFETCH_CONDITIONS[min_width]} -gt 0 ]] && [[ $term_width -lt ${FASTFETCH_CONDITIONS[min_width]} ]]; then
+    echo "width check faild."
     return 1
   fi
 
   # インタラクティブシェルチェック
-  if [[ ${FASTFETCH_CONDITIONS[require_interactive]} == "true" ]] && [[ $- != *i* ]]; then
+  if [[ ${FASTFETCH_CONDITIONS[require_interactive]} == "true" ]] && ! [[ -o interactive ]]; then
+    echo "interactive check faild."
     return 1
   fi
 
   # PS1環境変数チェック
   if [[ ${FASTFETCH_CONDITIONS[check_ps1]} == "true" ]] && [[ -z "$PS1" ]]; then
+    echo "ps1 check faild."
     return 1
   fi
 
@@ -37,21 +40,18 @@ check_conditions() {
   if [[ ${FASTFETCH_CONDITIONS[exclude_neovim]} == "true" ]]; then
     # NVIM環境変数またはVIMランタイム環境変数をチェック
     if [[ -n "$NVIM" ]] || [[ -n "$NVIM_LISTEN_ADDRESS" ]] || [[ "$VIM" == *"nvim"* ]]; then
-      return 1
-    fi
-
-    # 親プロセスがneovimかチェック
-    local parent_cmd=$(ps -p $PPID -o comm= 2>/dev/null)
-    if [[ "$parent_cmd" == *"nvim"* ]]; then
+      echo "vim/nvim runtime detected."
       return 1
     fi
   fi
 
   # fastfetchコマンド存在チェック
   if [[ ${FASTFETCH_CONDITIONS[require_command]} == "true" ]] && ! command -v fastfetch >/dev/null 2>&1; then
+      echo "fastfetch command check faild."
       return 1
   fi
 
+  echo "condition check succeed!"
   return 0
 }
 
@@ -77,9 +77,11 @@ handle_resize() {
 # メイン処理
 call() {
   if check_conditions && [[ $SCRIPT_EXECUTED -eq 0 ]]; then
-    fastfetch ${FASTFETCH_TYPE:+--$FASTFETCH_TYPE} "$FASTFETCH_SOURCE" --logo-width "$FASTFETCH_WIDTH" --logo-padding-left "$FASTFETCH_PADDING_LEFT" --logo-padding-right "$FASTFETCH_PADDING_RIGHT" --logo-padding-top "$FASTFETCH_PADDING_TOP"
+    fastfetch ${FASTFETCH_TYPE:+--$FASTFETCH_TYPE} "$FASTFETCH_SOURCE" --echoo-width "$FASTFETCH_WIDTH" --logo-padding-left "$FASTFETCH_PADDING_LEFT" --logo-padding-right "$FASTFETCH_PADDING_RIGHT" --logo-padding-top "$FASTFETCH_PADDING_TOP"
     FASTFETCH_EXECUTED=1
     SCRIPT_EXECUTED=1
+  else
+    echo "error occurred"
   fi
 }
 
