@@ -20,19 +20,19 @@ check_conditions() {
 
   # 横幅チェック
   if [[ ${FASTFETCH_CONDITIONS[min_width]} -gt 0 ]] && [[ $term_width -lt ${FASTFETCH_CONDITIONS[min_width]} ]]; then
-    echo "width check faild."
+    # echo "width check faild."
     return 1
   fi
 
   # インタラクティブシェルチェック
   if [[ ${FASTFETCH_CONDITIONS[require_interactive]} == "true" ]] && ! [[ -o interactive ]]; then
-    echo "interactive check faild."
+    # echo "interactive check faild."
     return 1
   fi
 
   # PS1環境変数チェック
   if [[ ${FASTFETCH_CONDITIONS[check_ps1]} == "true" ]] && [[ -z "$PS1" ]]; then
-    echo "ps1 check faild."
+    # echo "ps1 check faild."
     return 1
   fi
 
@@ -40,18 +40,18 @@ check_conditions() {
   if [[ ${FASTFETCH_CONDITIONS[exclude_neovim]} == "true" ]]; then
     # NVIM環境変数またはVIMランタイム環境変数をチェック
     if [[ -n "$NVIM" ]] || [[ -n "$NVIM_LISTEN_ADDRESS" ]] || [[ "$VIM" == *"nvim"* ]]; then
-      echo "vim/nvim runtime detected."
+      # echo "vim/nvim runtime detected."
       return 1
     fi
   fi
 
   # fastfetchコマンド存在チェック
   if [[ ${FASTFETCH_CONDITIONS[require_command]} == "true" ]] && ! command -v fastfetch >/dev/null 2>&1; then
-      echo "fastfetch command check faild."
+      # echo "fastfetch command check faild."
       return 1
   fi
 
-  echo "condition check succeed!"
+  # echo "condition check succeed!"
   return 0
 }
 
@@ -77,11 +77,11 @@ handle_resize() {
 # メイン処理
 call() {
   if check_conditions && [[ $SCRIPT_EXECUTED -eq 0 ]]; then
-    fastfetch ${FASTFETCH_TYPE:+--$FASTFETCH_TYPE} "$FASTFETCH_SOURCE" --echoo-width "$FASTFETCH_WIDTH" --logo-padding-left "$FASTFETCH_PADDING_LEFT" --logo-padding-right "$FASTFETCH_PADDING_RIGHT" --logo-padding-top "$FASTFETCH_PADDING_TOP"
+    fastfetch ${FASTFETCH_TYPE:+--$FASTFETCH_TYPE} "$FASTFETCH_SOURCE" --echo-width "$FASTFETCH_WIDTH" --logo-padding-left "$FASTFETCH_PADDING_LEFT" --logo-padding-right "$FASTFETCH_PADDING_RIGHT" --logo-padding-top "$FASTFETCH_PADDING_TOP"
     FASTFETCH_EXECUTED=1
     SCRIPT_EXECUTED=1
   else
-    echo "error occurred"
+    # echo "error occurred"
   fi
 }
 
